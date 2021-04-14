@@ -1,5 +1,5 @@
 # ExView - Excellent Viewer  
-作者：Gentle Kwan  
+
 
 官网:https://www.exview.ml/  
 ACGN的多功能跨平台阅览器  
