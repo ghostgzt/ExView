@@ -1,6 +1,6 @@
 LoadJS_Ajax((function(){
 	var time=getTimeNow();
 	var rl=document.documentElement.clientWidth+'*'+document.documentElement.clientHeight;
-	var href=encodeURIComponent(encodeURIComponent('https://www.exview.ml/?url='+window.location.href));
+	var href=encodeURIComponent(encodeURIComponent('https://www.exview.ml/?'+(localStorage.ExView_LoginUser?('uin='+localStorage.ExView_LoginUser+'_'):'')+'url='+window.location.href));
 	return 'https://ia.51.la/go1?id=18815645&rt='+time+'&rl='+rl+'&lang=zh-CN&ct=unknow&pf=1&ins=1&vd=1&ce=1&cd=24&ds=&ing=1&ekc=&sid='+time+'&tt=ExView&kw=&cu='+href+'&pu='
 })(),true);
