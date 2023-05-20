@@ -1,5 +1,111 @@
 (function(){
-	alert('\u7248\u672c\u592a\u65e7\uff0c\u8bf7\u524d\u5f80\u5b98\u7f51\u5347\u7ea7\uff01\n\u4e0b\u8f7d\u5730\u5740:https://vip.lanzoux.com/b743927');
-	window.open('https://vip.lanzous.com/b743927','_system');
-	navigator.app.exitApp();
+
+	var onlineupdate = false;
+	var onlineupdatepath;
+	var onlineupdatemd5;
+	if(!isdesktop()){
+		if(isios()){
+			var nowversion=ExView.iosversion||ExView.version;
+			var newestversion="2.6.6";
+			var newestversioninfo="2022.07.20 2.6.6<br>修复若干问题<br>其他平台请前往官网下载<br>https://vip.lanzoui.com/b743927<br>请分享ExView给你的朋友，感谢支持，有你们支持ExView会越做越好！";
+			var updatepath='https://pan.baidu.com/s/1A2qEvVRFlmRgLn9RRLeSsQ';	
+			var onlineupdatepath="https://jihulab.com/ghostgzt/exview/-/raw/main/platforms/ios/MoeRuntimeIOS.bin"+('?_='+(new Date()).getTime());
+			onlineupdatemd5="b43fdc1c9889a72c0f7e072f476e2ffd";
+			var onlineupdateversionName=newestversion;
+			var onlineupdateversionCode=202012050;
+			onlineupdate=true;
+		}else{
+			var nowversion=ExView.version;
+			var newestversion="2.6.6";
+			var newestversioninfo="2022.07.20 2.6.6<br>修复若干问题<br>其他平台请前往官网下载<br>https://vip.lanzoui.com/b743927<br>请分享ExView给你的朋友，感谢支持，有你们支持ExView会越做越好！";
+			var updatepath="https://vip.lanzoux.com/b743927";
+		}
+	}else if(isdesktopmac()){
+		var nowversion=ExView.nativeversion;
+		var newestversion="0.2.85";
+		var newestversioninfo="2022.07.20 0.2.85<br>修复若干问题<br>其他平台请前往官网下载<br>https://vip.lanzoui.com/b743927<br>请分享ExView给你的朋友，感谢支持，有你们支持ExView会越做越好！";
+		var updatepath="https://pan.baidu.com/s/1A2qEvVRFlmRgLn9RRLeSsQ";
+		var onlineupdatepath="https://jihulab.com/ghostgzt/exview/-/raw/main/platforms/mac/MoeRuntimeDesktopMac.bin"+('?_='+(new Date()).getTime());
+		onlineupdatemd5="e289a9a78b8c353752ab5307025e9802";
+		onlineupdate=true;
+	}else{
+		var nowversion=ExView.nativeversion;
+		var newestversion="0.2.85";
+		var newestversioninfo="2022.07.20 0.2.85<br>修复若干问题<br>其他平台请前往官网下载<br>https://vip.lanzoui.com/b743927<br>请分享ExView给你的朋友，感谢支持，有你们支持ExView会越做越好！";
+		var updatepath="https://pan.baidu.com/s/1A2qEvVRFlmRgLn9RRLeSsQ";
+		var onlineupdatepath="https://jihulab.com/ghostgzt/exview/-/raw/main/platforms/windows/MoeRuntimeDesktop.bin"+('?_='+(new Date()).getTime());
+		onlineupdatemd5="2f8c73d045f964343e218114908c02c9";
+		onlineupdate=true;
+	}
+
+	window.showdialog=window.showdialog||function(){
+		var strArr=[];
+		var funArr=[];
+		var buttonArr;
+		for(var i=0;i<arguments.length;i++){
+			if(typeof(arguments[i])=='string'){
+				strArr.push(arguments[i]);
+			}else if(typeof(arguments[i])=='function'){
+				funArr.push(arguments[i]);
+			}else if(isArray(arguments[i])){
+				buttonArr=arguments[i];
+			}
+		}
+		var flag={
+			text: strArr[0],
+			title:strArr[1]||'ExView',
+			afterText: strArr[2],
+			buttons: (buttonArr||["确定"]).map(function(buttonName,i){
+				return {
+					text: buttonName,
+					close: true,
+					bold: i==0,
+					onClick: funArr[i]
+				}
+			}).reverse()
+		}
+		ExView.fw.modal(flag)
+	}
+
+	try{
+		if(window.debug&&nowversion!=newestversion){
+			shownotice('各位dalao,新版本发布了，赶紧去更新吧！')
+		}else{
+			var notificationtitle=((nowversion!=newestversion)?"ExView版本更新通知":"ExView通知["+notificationid+"]");
+			var notificationcontent=((nowversion!=newestversion)?"发布 ExView "+newestversion+"<br>"+newestversioninfo:notificationinfo);
+			var notificationfn=function(){
+
+			};		
+			if((localStorage.ExView_NotificationId!=notificationid||nowversion!=newestversion)){
+				ExView.fw.alert(notificationcontent+'<div><style>.modal.modal-in .modal-text{overflow:auto;overflow-y:auto;overflow-x:hidden;}</style></div>',notificationtitle,function(){
+				if(nowversion==newestversion){
+					localStorage.ExView_NotificationId=notificationid;notificationfn();
+				}else{
+					try{
+						if(typeof(updateIOSVersion)=='function'&&onlineupdate){
+							showdialog(
+								'在线升级还是下载IPA安装文件?<br>(如果有闪退问题，请下载IPA方式安装)',
+								['取消','下载IPA','在线升级'],
+								function(){
+	
+								},
+								function () {
+									fileopener(updatepath,undefined,true);
+								},
+								function () {
+									updateIOSVersion(onlineupdatepath,onlineupdateversionCode,onlineupdateversionName,onlineupdatemd5);
+								}
+							);
+						}else if(typeof(updateDesktopVersion)=='function'&&onlineupdate) {
+							updateDesktopVersion(onlineupdatepath,newestversion,undefined,onlineupdatemd5);
+						}else{
+							fileopener(updatepath,undefined,true);
+						}
+					}catch(e){
+						window.open('https://vip.lanzoui.com/b743927','_system');
+					}
+				}
+			});}		
+		}
+	}catch(e){}
 })();
